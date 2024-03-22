@@ -1,14 +1,18 @@
-import { NextFunction, Request, Response } from "express"
-import { verifyJwt } from "src/utils/jwt"
+import { NextFunction, Request, Response } from 'express'
+import { userAccessTokenPayloadInput } from 'src/schemas/user.schemas'
+import { verifyJwt } from 'src/utils/jwt'
 
-const deserializeUser = async (req: Request, res: Response, next: NextFunction) => {
-  const accessToken = (req.headers.authorization || '').replace(/^Bearer\s/, '')
-  if (!accessToken) {
+const deserializeUser = async (
+  req: Request,
+  res: Response, next: NextFunction
+): Promise<void> => {
+  const accessToken = (req.headers.authorization ?? '').replace(/^Bearer\s/, '')
+  if (accessToken === '') {
     return next()
   }
-  const decoded = verifyJwt(accessToken, 'acessTokenPublicKey')
-  if (decoded) {
-    res.locals.user = decoded;  
+  const decoded = verifyJwt<userAccessTokenPayloadInput>(accessToken, 'acessTokenPublicKey')
+  if (decoded !== null) {
+    res.locals.user = decoded
   }
   return next()
 }

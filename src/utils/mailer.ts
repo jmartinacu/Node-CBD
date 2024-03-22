@@ -1,4 +1,4 @@
-import nodemailer, {SendMailOptions} from 'nodemailer'
+import nodemailer, { SendMailOptions } from 'nodemailer'
 import config from 'config'
 
 import log from 'src/utils/logger'
@@ -11,10 +11,10 @@ import log from 'src/utils/logger'
 // createTestCreds()
 
 const smtp = config.get<{
-  user: string,
-  pass: string,
-  host: string,
-  port: number,
+  user: string
+  pass: string
+  host: string
+  port: number
   secure: boolean
 }>('smtp')
 
@@ -26,13 +26,13 @@ const transporter = nodemailer.createTransport({
   }
 })
 
-async function sendEmail(payload: SendMailOptions) {
+async function sendEmail (payload: SendMailOptions): Promise<void> {
   transporter.sendMail(payload, (err, info) => {
-    if (err) {
+    if (err != null) {
       log.error(err, 'Error sending email')
       return
     }
-    log.info(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`)
+    log.info(`Preview URL: ${nodemailer.getTestMessageUrl(info) as string}`)
   })
 }
 

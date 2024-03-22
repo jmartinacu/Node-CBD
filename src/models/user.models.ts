@@ -1,10 +1,10 @@
-import { 
-  Severity, 
-  getModelForClass, 
-  modelOptions, 
-  pre, 
-  prop, 
-  DocumentType, 
+import {
+  Severity,
+  getModelForClass,
+  modelOptions,
+  pre,
+  prop,
+  DocumentType,
   index
 } from '@typegoose/typegoose'
 import { nanoid } from 'nanoid'
@@ -17,54 +17,52 @@ export const privateFields = [
   '__v',
   'verificationCode',
   'passwordResetCode',
-  'verified',
+  'verified'
 ]
 
 @pre<User>('save', async function () {
-  if(!this.isModified('password')) {
+  if (!this.isModified('password')) {
     return
-  } 
+  }
   const hash = await argon2.hash(this.password)
   this.password = hash
-  return
 })
 @index({ email: 1 })
 @modelOptions({
   schemaOptions: {
-    timestamps: true,
+    timestamps: true
   },
   options: {
-    allowMixed: Severity.ALLOW,
+    allowMixed: Severity.ALLOW
   }
 })
 export class User {
-  @prop({lowercase: true, required: true, unique: true})
-  email: string
+  @prop({ lowercase: true, required: true, unique: true })
+    email: string
 
-  @prop({required: true})
-  firstName: string
+  @prop({ required: true })
+    firstName: string
 
-  @prop({required: true})
-  lastName: string
+  @prop({ required: true })
+    lastName: string
 
-  @prop({required: true})
-  password: string
+  @prop({ required: true })
+    password: string
 
-  @prop({required: true, default: () => nanoid()})
-  verificationCode: string
+  @prop({ required: true, default: () => nanoid() })
+    verificationCode: string
 
   @prop()
-  passwordResetCode: string | null
+    passwordResetCode: string | null
 
   @prop({ default: false })
-  verified: boolean
+    verified: boolean
 
-  async validatePassword(this: DocumentType<User>, candidatePassword: string) {
+  async validatePassword (this: DocumentType<User>, candidatePassword: string): Promise<boolean | undefined> {
     try {
-      return await argon2.verify(this.password, candidatePassword)     
+      return await argon2.verify(this.password, candidatePassword)
     } catch (error) {
-      log.error(error, 'Could not validate password') 
-      return
+      log.error(error, 'Could not validate password')
     }
   }
 }

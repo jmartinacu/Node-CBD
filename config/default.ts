@@ -14,6 +14,6 @@ export default {
     pass: 'A33GW6F7BJn228XBya',
     host: 'smtp.ethereal.email',
     port: 587,
-    secure: false,
+    secure: false
   }
 }
