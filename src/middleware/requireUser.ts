@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { userAccessTokenPayloadInput } from 'src/schemas/user.schemas'
+import { UserAccessTokenPayloadInput } from 'src/schemas/user.schemas'
 
 const requireUser = (
   _req: Request,
@@ -7,7 +7,7 @@ const requireUser = (
   next: NextFunction
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 ): Response | void => {
-  const user: userAccessTokenPayloadInput | undefined = res.locals.user
+  const user: UserAccessTokenPayloadInput | undefined = res.locals.user
   if (typeof user === 'undefined') {
     return res.sendStatus(403)
   }

@@ -2,7 +2,7 @@ import { object, string, TypeOf } from 'zod'
 
 export const createUserSchema = object({
   body: object({
-    firstName: string({
+    name: string({
       required_error: 'First name is required'
     }),
     lastName: string({
@@ -77,4 +77,4 @@ export type ForgotPasswordInput = TypeOf<typeof forgotPasswordSchema>['body']
 
 export type ResetPasswordInput = TypeOf<typeof resetPasswordSchema>
 
-export type userAccessTokenPayloadInput = TypeOf<typeof userAccessTokenPayload>
+export type UserAccessTokenPayloadInput = TypeOf<typeof userAccessTokenPayload>
