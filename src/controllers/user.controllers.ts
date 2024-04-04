@@ -57,7 +57,7 @@ export async function forgotPasswordHandler (
 ): Promise<Response> {
   const { email } = req.body
   const user = await findUserByEmail(email)
-  const msg = 'If a use rwith that email is registered you will receive a password reset email'
+  const msg = 'If a user with that email is registered you will receive a password reset email'
   if (user == null) {
     log.debug(`User with email ${email} does not exists`)
     return res.send(msg)

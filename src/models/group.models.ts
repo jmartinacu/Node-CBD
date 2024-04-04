@@ -1,6 +1,10 @@
 import { getModelForClass, prop, Severity, index, modelOptions } from '@typegoose/typegoose'
 import { User } from './user.models'
 
+export const privateFields = [
+  '__v'
+]
+
 @index({ name: 1 })
 @modelOptions({
   schemaOptions: {
