@@ -1,4 +1,4 @@
-import { array, object, string, TypeOf } from 'zod'
+import { array, object, string, optional, TypeOf } from 'zod'
 
 export const createGroupSchema = object({
   body: object({
@@ -11,4 +11,23 @@ export const createGroupSchema = object({
   })
 })
 
+export const getGroupByIdSchema = object({
+  params: object({
+    id: string({ required_error: 'User id is mandatory' })
+  })
+})
+
+export const updateGroupSchema = object({
+  body: object({
+    name: optional(string({
+      required_error: 'Group name is required'
+    })),
+    users: optional(array(string(), {
+      required_error: 'A group cannot be empty'
+    }).min(1, 'A group must have at least one member'))
+  })
+})
+
 export type CreateGroupInput = TypeOf<typeof createGroupSchema>['body']
+export type GetGroupByIdInput = TypeOf<typeof getGroupByIdSchema>['params']
+export type UpdateGroupInput = TypeOf<typeof updateGroupSchema>['body']
