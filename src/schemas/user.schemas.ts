@@ -1,4 +1,4 @@
-import { object, string, TypeOf } from 'zod'
+import { object, string, TypeOf, number } from 'zod'
 
 export const createUserSchema = object({
   body: object({
@@ -7,6 +7,15 @@ export const createUserSchema = object({
     }),
     lastName: string({
       required_error: 'Last name is required'
+    }),
+    money: number({
+      required_error: 'Money is required'
+    }),
+    benefit: number({
+      required_error: 'Benefits is required'
+    }),
+    deubt: number({
+      required_error: 'Deubts is required'
     }),
     password: string({
       required_error: 'Password name is required'

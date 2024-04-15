@@ -47,6 +47,15 @@ export class User {
     lastName: string
 
   @prop({ required: true })
+    money: number
+
+  @prop({ required: true })
+    benefit: number
+
+  @prop({ required: true })
+    deubt: number
+
+  @prop({ required: true })
     password: string
 
   @prop({ required: true, default: () => nanoid() })
