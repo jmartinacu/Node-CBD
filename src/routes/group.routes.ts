@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import express from 'express'
-import { createGroupHandler, getGroupHandler, getGroupsHandler, updateGroupHandler } from 'src/controllers/group.controllers'
+import { createGroupHandler, getGroupHandler, getGroupsHandler, getUserGroupsHandler, updateGroupHandler } from 'src/controllers/group.controllers'
+import requireGroup from 'src/middleware/requireGroup'
+import requireUser from 'src/middleware/requireUser'
 import validateResource from 'src/middleware/validateResource'
 import { createGroupSchema, getGroupByIdSchema, updateGroupSchema } from 'src/schemas/group.schemas'
 
@@ -9,6 +11,12 @@ const router = express.Router()
 router.get(
   '/api/groups',
   getGroupsHandler
+)
+
+router.get(
+  '/api/group/user',
+  requireUser,
+  getUserGroupsHandler
 )
 
 router.get(
@@ -27,6 +35,7 @@ router.put(
   '/api/group/:id',
   validateResource(getGroupByIdSchema),
   validateResource(updateGroupSchema),
+  requireGroup,
   updateGroupHandler
 )
 
