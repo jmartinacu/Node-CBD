@@ -3,7 +3,8 @@ import { omit } from 'lodash'
 import { Group, privateFields as groupPrivateFields } from 'src/models/group.models'
 import { User } from 'src/models/user.models'
 import { CreateGroupInput, GetGroupByIdInput, UpdateGroupInput } from 'src/schemas/group.schemas'
-import { createGroup, getGroupById, getGroups, replaceGroup } from 'src/services/group.services'
+import { UserAccessTokenPayloadInput } from 'src/schemas/user.schemas'
+import { createGroup, getGroupById, getGroups, getUserGroups, replaceGroup } from 'src/services/group.services'
 import { findUserById } from 'src/services/user.services'
 import log from 'src/utils/logger'
 
@@ -68,6 +69,28 @@ export async function getGroupHandler (
     const parsedGroup: Omit<Partial<Group>, 'users'> & { users?: Array<Partial<User>> } = omit(groupObject, groupPrivateFields)
     parsedGroup.users = parsedUsers
     return res.send(parsedGroup)
+  } catch (error) {
+    log.error(error)
+    return res.status(500).send(error)
+  }
+}
+
+export async function getUserGroupsHandler (
+  req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    const user: UserAccessTokenPayloadInput = res.locals.user
+    const userGroups = await getUserGroups(user._id)
+    const result = []
+    for (const group of userGroups) {
+      const groupObject = group.toObject()
+      const parsedUsers = groupObject.users.map(u => omit(u, ['password', 'verificationCode', 'passwordResetCode']))
+      const parsedGroup: Omit<Partial<Group>, 'users'> & { users?: Array<Partial<User>> } = omit(groupObject, groupPrivateFields)
+      parsedGroup.users = parsedUsers
+      result.push(parsedGroup)
+    }
+    return res.send(result)
   } catch (error) {
     log.error(error)
     return res.status(500).send(error)

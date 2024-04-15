@@ -19,12 +19,8 @@ export const getGroupByIdSchema = object({
 
 export const updateGroupSchema = object({
   body: object({
-    name: optional(string({
-      required_error: 'Group name is required'
-    })),
-    users: optional(array(string(), {
-      required_error: 'A group cannot be empty'
-    }).min(1, 'A group must have at least one member'))
+    name: optional(string()),
+    users: optional(array(string()))
   })
 })
 

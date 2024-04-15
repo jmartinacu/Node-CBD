@@ -16,3 +16,7 @@ export async function getGroups (query: Object = {}) {
 export async function getGroupById (id: string) {
   return await GroupModel.findById(id)
 }
+
+export async function getUserGroups (userId: string) {
+  return await GroupModel.find({ 'users._id': userId })
+}
