@@ -1,5 +1,6 @@
-import { User } from './user.models'
 import { getModelForClass, prop, Severity, index, modelOptions } from '@typegoose/typegoose'
+
+import { User } from './user.models'
 
 export const privateFields = [
   '__v'
@@ -16,11 +17,11 @@ export const privateFields = [
 })
 
 export class Payment {
-  @prop({ default: [], required: true, type: () => [User] })
-    payer: User[]
+  @prop({ required: true, type: () => User })
+    payer: User
 
-  @prop({ default: [], required: true, type: () => [User] })
-    receiver: User[]
+  @prop({ required: true, type: () => User })
+    receiver: User
 
   @prop({ required: true })
     amount: number

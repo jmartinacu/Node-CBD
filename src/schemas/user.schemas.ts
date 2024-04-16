@@ -1,4 +1,4 @@
-import { object, string, TypeOf, number } from 'zod'
+import { object, string, number, TypeOf } from 'zod'
 
 export const createUserSchema = object({
   body: object({
@@ -7,15 +7,6 @@ export const createUserSchema = object({
     }),
     lastName: string({
       required_error: 'Last name is required'
-    }),
-    money: number({
-      required_error: 'Money is required'
-    }),
-    benefit: number({
-      required_error: 'Benefits is required'
-    }),
-    deubt: number({
-      required_error: 'Deubts is required'
     }),
     password: string({
       required_error: 'Password name is required'
@@ -67,15 +58,19 @@ export const resetPasswordSchema = object({
 
 export const userAccessTokenPayload = object({
   _id: string(),
+  email: string({
+    required_error: 'Email confirmation is required'
+  }).email('Not a valid email'),
   firstName: string({
     required_error: 'First name is required'
   }),
   lastName: string({
     required_error: 'Last name is required'
   }),
-  email: string({
-    required_error: 'Email confirmation is required'
-  }).email('Not a valid email')
+  createdAt: string().datetime(),
+  updatedAt: string().datetime(),
+  iat: number(),
+  exp: number()
 })
 
 export type CreateUserInput = TypeOf<typeof createUserSchema>['body']

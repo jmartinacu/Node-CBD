@@ -1,13 +1,10 @@
-import { TypeOf, number, object, string, array } from 'zod'
+import { TypeOf, number, object, string } from 'zod'
 
 export const createPaymentSchema = object({
   body: object({
-    payer: array(string(), {
+    receiver: string({
       required_error: 'Receiver is required'
-    }).min(1, 'A group must have at least one member'),
-    receiver: array(string(), {
-      required_error: 'Receiver is required'
-    }).min(1, 'A group must have at least one member'),
+    }),
     amount: number({
       required_error: 'Amount is required'
     })

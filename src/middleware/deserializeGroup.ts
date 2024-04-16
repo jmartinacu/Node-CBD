@@ -16,7 +16,6 @@ const deserializeGroup = async (
     if (isArray(groupId) && groupId.length >= 1) {
       groupId = groupId[0]
     }
-    log.info(`Hay group id: ${groupId as string}`)
     const groupDb = await getGroupById(groupId as string)
     if (groupDb !== null) {
       res.locals.group = groupDb.toObject()

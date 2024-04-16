@@ -4,6 +4,7 @@ export default {
   dbName: 'mongo',
   dbUser: 'mongouser',
   dbPass: 'mongopass',
+  connString: false,
   logLevel: 'info',
   acessTokenPrivateKey: '',
   acessTokenPublicKey: '',

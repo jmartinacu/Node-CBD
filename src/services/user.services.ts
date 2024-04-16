@@ -12,3 +12,7 @@ export function findUserById (id: string) {
 export function findUserByEmail (email: string) {
   return UserModel.findOne({ email })
 }
+
+export async function updateUser (id: string, input: Partial<User>) {
+  return await UserModel.updateOne({ _id: id }, input)
+}

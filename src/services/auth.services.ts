@@ -6,7 +6,7 @@ import { User, privateFields } from 'src/models/user.models'
 import { signJwt } from 'src/utils/jwt'
 
 export function signAccessToken (user: DocumentType<User>): string {
-  const payload = omit(user.toJSON(), privateFields)
+  const payload = omit(user.toJSON(), privateFields.concat('benefit', 'deubt'))
   const accessToken = signJwt(payload, 'acessTokenPrivateKey', {
     expiresIn: '15m'
   })
