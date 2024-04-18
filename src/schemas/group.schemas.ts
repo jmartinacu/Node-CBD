@@ -14,7 +14,7 @@ export const createGroupSchema = object({
 
 export const getGroupByIdSchema = object({
   params: object({
-    id: string({ required_error: 'User id is mandatory' })
+    id: string({ required_error: 'Group id is mandatory' })
   })
 })
 

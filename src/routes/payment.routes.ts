@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import express from 'express'
 
-import { createPaymentHandler, getPaymentsHandler } from 'src/controllers/payment.controllers'
+import { createPaymentHandler, deletePaymentHandler, getPaymentsHandler } from 'src/controllers/payment.controllers'
 import requireGroup from 'src/middleware/requireGroup'
 import requireUser from 'src/middleware/requireUser'
 import validateResource from 'src/middleware/validateResource'
-import { createPaymentSchema } from 'src/schemas/payment.schemas'
+import { createPaymentSchema, getPaymentByIdSchema } from 'src/schemas/payment.schemas'
 
 const router = express.Router()
 
@@ -20,6 +20,12 @@ router.post('/api/payment',
   validateResource(createPaymentSchema),
   requireGroup,
   createPaymentHandler
+)
+
+router.delete('/api/payment/:id',
+  validateResource(getPaymentByIdSchema),
+  requireGroup,
+  deletePaymentHandler
 )
 
 export default router

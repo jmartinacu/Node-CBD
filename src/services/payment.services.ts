@@ -12,3 +12,7 @@ export async function getPaymentById (id: string) {
 export async function getPayments () {
   return await PaymentModel.find()
 }
+
+export async function deletePayment (id: string) {
+  return await PaymentModel.deleteOne({ _id: id })
+}

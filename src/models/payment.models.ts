@@ -2,6 +2,8 @@ import { getModelForClass, prop, Severity, modelOptions, index, DocumentType } f
 
 import { User } from './user.models'
 import { findUserById } from 'src/services/user.services'
+import { Group } from './group.models'
+import { getGroupById } from 'src/services/group.services'
 
 export const privateFields = [
   '__v'
@@ -18,6 +20,9 @@ export const privateFields = [
 })
 export class Payment {
   @prop({ required: true })
+    group: string
+
+  @prop({ required: true })
     payer: string
 
   @prop({ required: true })
@@ -26,26 +31,23 @@ export class Payment {
   @prop({ required: true })
     amount: number
 
-  constructor (payer: string, receiver: string, amount: number) {
+  constructor (payer: string, receiver: string, group: string, amount: number) {
     this.payer = payer
     this.receiver = receiver
+    this.group = group
     this.amount = amount
   }
 
-  async getPayer (): Promise<DocumentType<User>> {
-    const result = await findUserById(this.payer)
-    if (result == null) {
-      throw new Error('Payer not found')
-    }
-    return result
+  async getPayer (): Promise<DocumentType<User> | null> {
+    return await findUserById(this.payer)
   }
 
-  async getReceiver (): Promise<DocumentType<User>> {
-    const result = await findUserById(this.receiver)
-    if (result == null) {
-      throw new Error('Payer not found')
-    }
-    return result
+  async getReceiver (): Promise<DocumentType<User> | null> {
+    return await findUserById(this.receiver)
+  }
+
+  async getGroup (): Promise<DocumentType<Group> | null> {
+    return await getGroupById(this.group)
   }
 }
 

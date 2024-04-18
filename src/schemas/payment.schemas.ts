@@ -11,4 +11,11 @@ export const createPaymentSchema = object({
   })
 })
 
+export const getPaymentByIdSchema = object({
+  params: object({
+    id: string({ required_error: 'Payment id is mandatory' })
+  })
+})
+
 export type CreatePaymentInput = TypeOf<typeof createPaymentSchema>['body']
+export type GetPaymentByIdInput = TypeOf<typeof getPaymentByIdSchema>['params']

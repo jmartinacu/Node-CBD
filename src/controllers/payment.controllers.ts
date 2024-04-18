@@ -2,15 +2,14 @@ import { Request, Response } from 'express'
 
 import log from 'src/utils/logger'
 import { Payment } from 'src/models/payment.models'
-import { CreatePaymentInput } from 'src/schemas/payment.schemas'
+import { CreatePaymentInput, GetPaymentByIdInput } from 'src/schemas/payment.schemas'
 import { UserAccessTokenPayloadInput } from 'src/schemas/user.schemas'
-import { createPayment, getPayments } from 'src/services/payment.services'
+import { createPayment, deletePayment, getPaymentById, getPayments } from 'src/services/payment.services'
 import { findUserById, updateUser } from 'src/services/user.services'
 import { getDbSession } from 'src/utils/connnectToDB'
 import { GroupRequestPayload } from 'src/schemas/group.schemas'
 import { updateGroup } from 'src/services/group.services'
 
-// HAY QUE CREAR LA TRANSACIÓN DE MONGO
 export async function createPaymentHandler (
   req: Request<{}, {}, CreatePaymentInput>,
   res: Response
@@ -35,6 +34,7 @@ export async function createPaymentHandler (
     const newPayment = new Payment(
       payerDb._id.toString(),
       receiverDb._id.toString(),
+      group._id,
       amount
     )
     await updateUser(payer._id, {
@@ -57,9 +57,53 @@ export async function createPaymentHandler (
 }
 
 export async function getPaymentsHandler (
-  req: Request,
+  _req: Request,
   res: Response
 ): Promise<Response> {
   const payments = await getPayments()
   return res.send(payments)
+}
+
+export async function deletePaymentHandler (
+  req: Request<GetPaymentByIdInput, {}, {}>,
+  res: Response
+): Promise<Response> {
+  const session = await getDbSession()
+  session.startTransaction()
+  try {
+    const user: UserAccessTokenPayloadInput = res.locals.user
+    const group: GroupRequestPayload = res.locals.group
+    const { id } = req.params
+    const paymentDb = await getPaymentById(id)
+    if (paymentDb == null) {
+      return res.status(404).send(`Payment with id ${id} not found`)
+    }
+    if (user._id !== paymentDb.payer) {
+      return res.sendStatus(403)
+    }
+    const payerDb = await paymentDb.getPayer()
+    const receiverDb = await paymentDb.getReceiver()
+    if (payerDb == null || receiverDb == null) {
+      return res.sendStatus(400)
+    }
+    if (group._id.toString() !== paymentDb.group) {
+      return res.status(400).send(`This payment doesn't belongs to group ${group._id}`)
+    }
+    await updateUser(paymentDb.payer, {
+      deubt: payerDb.deubt - paymentDb.amount
+    })
+    await updateUser(paymentDb.receiver, {
+      benefit: receiverDb.benefit - paymentDb.amount
+    })
+    await updateGroup(group._id, { transactionsAmount: group.transactionsAmount - paymentDb.amount })
+    await deletePayment(id)
+    await session.commitTransaction()
+    return res.send('Payment deleted successfully')
+  } catch (error) {
+    log.error(error)
+    await session.abortTransaction()
+    return res.status(500).send(error)
+  } finally {
+    await session.endSession()
+  }
 }
