@@ -20,6 +20,9 @@ export class Group {
 
   @prop({ default: [], type: () => [User] })
     users: User[]
+
+  @prop({ default: 0 })
+    transactionsAmount: number
 }
 
 const GroupModel = getModelForClass(Group)

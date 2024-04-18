@@ -1,4 +1,5 @@
-import { array, object, string, optional, TypeOf } from 'zod'
+import { Group } from 'src/models/group.models'
+import { array, object, string, optional, TypeOf, number } from 'zod'
 
 export const createGroupSchema = object({
   body: object({
@@ -20,10 +21,17 @@ export const getGroupByIdSchema = object({
 export const updateGroupSchema = object({
   body: object({
     name: optional(string()),
-    users: optional(array(string()))
+    users: optional(array(string())),
+    transactionsAmount: optional(number().min(0))
   })
 })
 
 export type CreateGroupInput = TypeOf<typeof createGroupSchema>['body']
 export type GetGroupByIdInput = TypeOf<typeof getGroupByIdSchema>['params']
 export type UpdateGroupInput = TypeOf<typeof updateGroupSchema>['body']
+export type GroupRequestPayload = Group & {
+  _id: string
+  createdAt: string
+  updatedAt: string
+  __v: number
+}

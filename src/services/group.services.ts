@@ -9,6 +9,10 @@ export async function replaceGroup (id: string, input: Group) {
   return await GroupModel.replaceOne({ _id: id }, input)
 }
 
+export async function updateGroup (id: string, input: Partial<Group>) {
+  return await GroupModel.updateOne({ _id: id }, input)
+}
+
 export async function getGroups (query: Object = {}) {
   return await GroupModel.find(query)
 }
