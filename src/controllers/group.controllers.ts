@@ -14,11 +14,9 @@ export async function createGroupHandler (
 ): Promise<Response> {
   try {
     const groupReq = req.body
-    const newGroup: Group = {
-      name: groupReq.name,
-      users: [],
-      transactionsAmount: 0
-    }
+    const newGroup = new Group(
+      groupReq.name
+    )
     for (const id of groupReq.users) {
       const userDb = await findUserById(id)
       if (userDb == null) {
@@ -119,11 +117,11 @@ export async function updateGroupHandler (
         updatedUsers.push(userDb)
       }
     }
-    const updatedGroup: Group = {
-      name: typeof groupReq.name !== 'undefined' ? groupReq.name : groupDb.name,
-      users: typeof groupReq.users !== 'undefined' ? updatedUsers : groupDb.users,
-      transactionsAmount: typeof groupReq.transactionsAmount !== 'undefined' ? groupReq.transactionsAmount : groupDb.transactionsAmount
-    }
+    const updatedGroup = new Group(
+      typeof groupReq.name !== 'undefined' ? groupReq.name : groupDb.name,
+      typeof groupReq.users !== 'undefined' ? updatedUsers : groupDb.users,
+      typeof groupReq.transactionsAmount !== 'undefined' ? groupReq.transactionsAmount : groupDb.transactionsAmount
+    )
     await replaceGroup(id, updatedGroup)
     return res.send('Group updated successfully')
   } catch (error) {

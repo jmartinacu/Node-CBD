@@ -23,6 +23,12 @@ export class Group {
 
   @prop({ default: 0 })
     transactionsAmount: number
+
+  constructor (name: string, users: User[] = [], amount: number = 0) {
+    this.name = name
+    this.users = users
+    this.transactionsAmount = amount
+  }
 }
 
 const GroupModel = getModelForClass(Group)
