@@ -4,8 +4,9 @@ import { Group, privateFields as groupPrivateFields } from 'src/models/group.mod
 import { User } from 'src/models/user.models'
 import { CreateGroupInput, GetGroupByIdInput, UpdateGroupInput } from 'src/schemas/group.schemas'
 import { UserAccessTokenPayloadInput } from 'src/schemas/user.schemas'
-import { createGroup, getGroupById, getGroups, getUserGroups, replaceGroup } from 'src/services/group.services'
+import { createGroup, deleteGroup, getGroupById, getGroups, getUserGroups, replaceGroup } from 'src/services/group.services'
 import { findUserById } from 'src/services/user.services'
+import { getDbSession } from 'src/utils/connnectToDB'
 import log from 'src/utils/logger'
 
 export async function createGroupHandler (
@@ -127,5 +128,29 @@ export async function updateGroupHandler (
   } catch (error) {
     log.error(error)
     return res.status(500).send(error)
+  }
+}
+
+export async function deleteGroupHandler (
+  req: Request<GetGroupByIdInput, {}, {}>,
+  res: Response
+): Promise<Response> {
+  const session = await getDbSession()
+  session.startTransaction()
+  try {
+    const { id } = req.params
+    const groupDb = await getGroupById(id)
+    if (groupDb == null) {
+      return res.status(404).send('Group not found')
+    }
+    await deleteGroup(id)
+    await session.commitTransaction()
+    return res.send('Group deleted successfully')
+  } catch (error) {
+    log.error(error)
+    await session.abortTransaction()
+    return res.status(500).send(error)
+  } finally {
+    await session.endSession()
   }
 }

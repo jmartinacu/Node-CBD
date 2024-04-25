@@ -24,3 +24,7 @@ export async function getGroupById (id: string) {
 export async function getUserGroups (userId: string) {
   return await GroupModel.find({ 'users._id': userId })
 }
+
+export async function deleteGroup (id: string) {
+  return await GroupModel.deleteOne({ _id: id })
+}
