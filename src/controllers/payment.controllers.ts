@@ -29,7 +29,7 @@ export async function createPaymentHandler (
       return res.status(404).send(`User with id ${receiver} not found`)
     }
     if (!group.users.some(u => u.email === receiverDb.email)) {
-      return res.send(403).send(`User with id ${receiver} not in group ${group.name}`)
+      return res.status(403).send(`User with id ${receiver} not in group ${group.name}`)
     }
     const newPayment = new Payment(
       payerDb._id.toString(),
