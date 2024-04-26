@@ -5,6 +5,7 @@ import sendEmail from 'src/utils/mailer'
 import { CreateUserInput, ForgotPasswordInput, VerifyUserInput, ResetPasswordInput } from 'src/schemas/user.schemas'
 import { createUser, findUserById, findUserByEmail } from 'src/services/user.services'
 import { nanoid } from 'nanoid'
+import UserModel from 'src/models/user.models'
 
 export async function createUserHandler (
   req: Request<{}, {}, CreateUserInput>,
@@ -103,4 +104,62 @@ export async function getCurrentUserHandler (
   res: Response
 ): Promise<Response> {
   return res.send(res.locals.user)
+}
+
+export async function getTop3UsersHandler (
+  _req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    const users = await UserModel.aggregate([
+      {
+        $addFields:
+          {
+            idToString: {
+              $toString: '$_id'
+            }
+          }
+      },
+      {
+        $lookup:
+          {
+            from: 'payments',
+            localField: 'idToString',
+            foreignField: 'receiver',
+            as: 'pr'
+          }
+      },
+      {
+        $addFields:
+          {
+            payReceiveds: {
+              $size: '$pr'
+            }
+          }
+      },
+      {
+        $sort:
+
+          {
+            payReceiveds: -1
+          }
+      },
+      {
+        $limit:
+
+          3
+      },
+      {
+        $project:
+          {
+            pr: 0,
+            idToString: 0
+          }
+      }
+    ])
+    return res.send(users)
+  } catch (error) {
+    log.error(error)
+    return res.status(500).send()
+  }
 }

@@ -6,6 +6,7 @@ import {
   createUserHandler,
   forgotPasswordHandler,
   getCurrentUserHandler,
+  getTop3UsersHandler,
   resetPasswordHandler,
   verifyUserHanlder
 } from 'src/controllers/user.controllers'
@@ -47,6 +48,11 @@ router.get(
   '/api/users/me',
   requireUser,
   getCurrentUserHandler
+)
+
+router.get(
+  '/api/users/top3',
+  getTop3UsersHandler
 )
 
 export default router
