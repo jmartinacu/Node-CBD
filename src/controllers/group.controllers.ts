@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { omit } from 'lodash'
-import { Group, privateFields as groupPrivateFields } from 'src/models/group.models'
+import GroupModel, { Group, privateFields as groupPrivateFields } from 'src/models/group.models'
 import { User } from 'src/models/user.models'
 import { CreateGroupInput, GetGroupByIdInput, UpdateGroupInput } from 'src/schemas/group.schemas'
 import { UserAccessTokenPayloadInput } from 'src/schemas/user.schemas'
@@ -152,5 +152,52 @@ export async function deleteGroupHandler (
     return res.status(500).send(error)
   } finally {
     await session.endSession()
+  }
+}
+
+export async function paymentsPerGroup (
+  _req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    const groups = await GroupModel.aggregate([
+      {
+        $addFields:
+          {
+            idToString: {
+              $toString: '$_id'
+            }
+          }
+      },
+      {
+        $lookup:
+          {
+            from: 'payments',
+            localField: 'idToString',
+            foreignField: 'group',
+            as: 'pr'
+          }
+      },
+      {
+        $addFields:
+          {
+            paymentCount: {
+              $size: '$pr'
+            }
+          }
+      },
+      {
+        $project:
+          {
+            name: 1,
+            transactionsAmount: 1,
+            paymentCount: 1
+          }
+      }
+    ])
+    return res.send(groups)
+  } catch (error) {
+    log.error(error)
+    return res.status(500).send()
   }
 }
