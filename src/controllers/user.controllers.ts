@@ -6,6 +6,7 @@ import { CreateUserInput, ForgotPasswordInput, VerifyUserInput, ResetPasswordInp
 import { createUser, findUserById, findUserByEmail } from 'src/services/user.services'
 import { nanoid } from 'nanoid'
 import UserModel from 'src/models/user.models'
+import mongoose from 'mongoose'
 
 export async function createUserHandler (
   req: Request<{}, {}, CreateUserInput>,
@@ -157,6 +158,48 @@ export async function getTop3UsersHandler (
           }
       }
     ])
+    return res.send(users)
+  } catch (error) {
+    log.error(error)
+    return res.status(500).send()
+  }
+}
+
+export async function getNegativeMoneyUsers (
+  _req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    const users = await UserModel.aggregate([
+      {
+        $match:
+          {
+            $expr: {
+              $gt: ['$deubt', '$benefit']
+            }
+          }
+      },
+      {
+        $project:
+          {
+            firstName: 1,
+            lastName: 1,
+            totalMoney: {
+              $subtract: ['$benefit', '$deubt']
+            }
+          }
+      },
+      { $sort: { totalMoney: 1 } }
+    ])
+    const collections = await mongoose.connection.db.listCollections().toArray()
+    const collectionExists = collections.some(collection => collection.name === 'negativeMoneyUsers')
+    if (!collectionExists) {
+      await mongoose.connection.db.createCollection('negativeMoneyUsers')
+      await mongoose.connection.db.collection('negativeMoneyUsers').insertMany(users)
+    } else {
+      await mongoose.connection.db.collection('negativeMoneyUsers').deleteMany({})
+      await mongoose.connection.db.collection('negativeMoneyUsers').insertMany(users)
+    }
     return res.send(users)
   } catch (error) {
     log.error(error)

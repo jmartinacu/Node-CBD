@@ -6,6 +6,7 @@ import {
   createUserHandler,
   forgotPasswordHandler,
   getCurrentUserHandler,
+  getNegativeMoneyUsers,
   getTop3UsersHandler,
   resetPasswordHandler,
   verifyUserHanlder
@@ -52,7 +53,14 @@ router.get(
 
 router.get(
   '/api/users/top3',
+  requireUser,
   getTop3UsersHandler
+)
+
+router.get(
+  '/api/users/negative',
+  requireUser,
+  getNegativeMoneyUsers
 )
 
 export default router
