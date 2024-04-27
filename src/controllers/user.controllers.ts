@@ -206,3 +206,132 @@ export async function getNegativeMoneyUsers (
     return res.status(500).send()
   }
 }
+
+export async function getPositiveMoneyUsers (
+  _req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    const users = await UserModel.aggregate([
+      {
+        $match:
+          {
+            $expr: {
+              $gt: ['$benefit', '$deubt']
+            }
+          }
+      },
+      {
+        $project:
+          {
+            firstName: 1,
+            lastName: 1,
+            totalMoney: {
+              $subtract: ['$benefit', '$deubt']
+            }
+          }
+      },
+      { $sort: { totalMoney: -1 } }
+    ])
+    const collections = await mongoose.connection.db.listCollections().toArray()
+    const collectionExists = collections.some(collection => collection.name === 'positiveMoneyUsers')
+    if (!collectionExists) {
+      await mongoose.connection.db.createCollection('positiveMoneyUsers')
+      await mongoose.connection.db.collection('positiveMoneyUsers').insertMany(users)
+    } else {
+      await mongoose.connection.db.collection('positiveMoneyUsers').deleteMany({})
+      await mongoose.connection.db.collection('positiveMoneyUsers').insertMany(users)
+    }
+    return res.send(users)
+  } catch (error) {
+    log.error(error)
+    return res.status(500).send()
+  }
+}
+
+export async function getAverageCosts (
+  _req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    const users = await UserModel.aggregate([
+      {
+        $addFields:
+          {
+            idString: {
+              $toString: '$_id'
+            }
+          }
+      },
+      {
+        $lookup:
+          {
+            from: 'payments',
+            localField: 'idString',
+            foreignField: 'payer',
+            as: 'payments'
+          }
+      },
+      {
+        $unwind:
+          {
+            path: '$payments',
+            preserveNullAndEmptyArrays: false
+          }
+      },
+      {
+        $addFields:
+          {
+            groupIdObject: {
+              $toObjectId: '$payments.group'
+            }
+          }
+      },
+      {
+        $lookup:
+          {
+            from: 'groups',
+            localField: 'groupIdObject',
+            foreignField: '_id',
+            as: 'group'
+          }
+      },
+      {
+        $unwind:
+          {
+            path: '$group',
+            preserveNullAndEmptyArrays: false
+          }
+      },
+      {
+        $group:
+          {
+            _id: {
+              userId: '$firstName',
+              groupName: '$group.name'
+            },
+            totalSpent: {
+              $sum: '$payments.amount'
+            },
+            averageReceived: {
+              $avg: {
+                $multiply: [-1, '$payments.amount']
+              }
+            }
+          }
+      },
+      {
+        $project: {
+          _id: '$_id.userId',
+          group: '$_id.groupName',
+          totalSpent: 1,
+          averageReceived: 1
+        }
+      }
+    ])
+    return res.send(users)
+  } catch (error) {
+    log.error(error)
+    return res.status(500).send()
+  }
+}

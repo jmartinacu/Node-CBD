@@ -5,8 +5,10 @@ import validateResource from 'src/middleware/validateResource'
 import {
   createUserHandler,
   forgotPasswordHandler,
+  getAverageCosts,
   getCurrentUserHandler,
   getNegativeMoneyUsers,
+  getPositiveMoneyUsers,
   getTop3UsersHandler,
   resetPasswordHandler,
   verifyUserHanlder
@@ -61,6 +63,18 @@ router.get(
   '/api/users/negative',
   requireUser,
   getNegativeMoneyUsers
+)
+
+router.get(
+  '/api/users/positive',
+  requireUser,
+  getPositiveMoneyUsers
+)
+
+router.get(
+  '/api/users/avg',
+  requireUser,
+  getAverageCosts
 )
 
 export default router
