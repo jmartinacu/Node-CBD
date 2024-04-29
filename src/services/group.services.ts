@@ -22,7 +22,7 @@ export async function getGroupById (id: string) {
 }
 
 export async function getUserGroups (userId: string) {
-  return await GroupModel.find({ 'users._id': userId })
+  return await GroupModel.find({ users: userId })
 }
 
 export async function deleteGroup (id: string) {

@@ -6,9 +6,9 @@ import { CreatePaymentInput, GetPaymentByIdInput } from 'src/schemas/payment.sch
 import { UserAccessTokenPayloadInput } from 'src/schemas/user.schemas'
 import { createPayment, deletePayment, getPaymentById, getPayments } from 'src/services/payment.services'
 import { findUserById, updateUser } from 'src/services/user.services'
-import { getDbSession } from 'src/utils/connnectToDB'
+import { getDbSession } from 'src/utils/connectToDB'
 import { GroupRequestPayload } from 'src/schemas/group.schemas'
-import { updateGroup } from 'src/services/group.services'
+import { getGroupById, updateGroup } from 'src/services/group.services'
 
 export async function createPaymentHandler (
   req: Request<{}, {}, CreatePaymentInput>,
@@ -19,6 +19,11 @@ export async function createPaymentHandler (
   try {
     const payer: UserAccessTokenPayloadInput = res.locals.user
     const group: GroupRequestPayload = res.locals.group
+    const groupDb = await getGroupById(group._id)
+    if (groupDb == null) {
+      return res.sendStatus(404)
+    }
+    const users = await groupDb.getUsers()
     const { amount, receiver } = req.body
     const payerDb = await findUserById(payer._id)
     const receiverDb = await findUserById(receiver)
@@ -28,8 +33,8 @@ export async function createPaymentHandler (
     if (receiverDb == null) {
       return res.status(404).send(`User with id ${receiver} not found`)
     }
-    if (!group.users.some(u => u.email === receiverDb.email)) {
-      return res.status(403).send(`User with id ${receiver} not in group ${group.name}`)
+    if (!users.some(u => u.email === receiverDb.email)) {
+      return res.send(403).send(`User with id ${receiver} not in group ${group.name}`)
     }
     const newPayment = new Payment(
       payerDb._id.toString(),
@@ -105,5 +110,19 @@ export async function deletePaymentHandler (
     return res.status(500).send(error)
   } finally {
     await session.endSession()
+  }
+}
+
+export async function getUserPaymentsHandler (
+  _req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    const user: UserAccessTokenPayloadInput = res.locals.user
+    const userPayments = await getPayments({ payer: user._id })
+    return res.send(userPayments)
+  } catch (error) {
+    log.error(error)
+    return res.status(500).send(error)
   }
 }

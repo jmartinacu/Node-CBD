@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import express from 'express'
 
-import { createPaymentHandler, deletePaymentHandler, getPaymentsHandler } from 'src/controllers/payment.controllers'
+import { createPaymentHandler, deletePaymentHandler, getPaymentsHandler, getUserPaymentsHandler } from 'src/controllers/payment.controllers'
 import requireGroup from 'src/middleware/requireGroup'
 import requireUser from 'src/middleware/requireUser'
 import validateResource from 'src/middleware/validateResource'
@@ -14,6 +14,11 @@ router.use(requireUser)
 router.get(
   '/api/payments',
   getPaymentsHandler
+)
+
+router.get(
+  '/api/payment/user',
+  getUserPaymentsHandler
 )
 
 router.post('/api/payment',

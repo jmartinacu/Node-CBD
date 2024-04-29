@@ -9,8 +9,8 @@ export async function getPaymentById (id: string) {
   return await PaymentModel.findById(id)
 }
 
-export async function getPayments () {
-  return await PaymentModel.find()
+export async function getPayments (query: object = {}) {
+  return await PaymentModel.find(query)
 }
 
 export async function deletePayment (id: string) {

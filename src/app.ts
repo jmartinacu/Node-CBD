@@ -8,7 +8,7 @@ import log from 'src/utils/logger'
 import router from 'src/routes/index'
 import deserializeUser from 'src/middleware/deserializeUser'
 import deserializeGroup from './middleware/deserializeGroup'
-import connectToDB from 'src/utils/connnectToDB'
+import connectToDB from 'src/utils/connectToDB'
 
 
 const app = express()

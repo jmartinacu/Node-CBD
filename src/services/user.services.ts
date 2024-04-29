@@ -13,6 +13,10 @@ export function findUserByEmail (email: string) {
   return UserModel.findOne({ email })
 }
 
+export function findUsers (query: Object) {
+  return UserModel.find(query)
+}
+
 export async function updateUser (id: string, input: Partial<User>) {
   return await UserModel.updateOne({ _id: id }, input)
 }
