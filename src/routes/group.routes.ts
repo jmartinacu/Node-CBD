@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import express from 'express'
-import { createGroupHandler, deleteGroupHandler, getGroupHandler, getGroupsHandler, getUserGroupsHandler, paymentsPerGroup, updateGroupHandler } from 'src/controllers/group.controllers'
+import { addUserToGroupHandler, createGroupHandler, deleteGroupHandler, getGroupHandler, getGroupsHandler, getUserGroupsHandler, paymentsPerGroup, updateGroupHandler } from 'src/controllers/group.controllers'
 import requireGroup from 'src/middleware/requireGroup'
 import requireUser from 'src/middleware/requireUser'
 import validateResource from 'src/middleware/validateResource'
@@ -34,6 +34,13 @@ router.post(
   '/api/group',
   validateResource(createGroupSchema),
   createGroupHandler
+)
+
+router.put(
+  '/api/group/add/:id',
+  requireUser,
+  requireGroup,
+  addUserToGroupHandler
 )
 
 router.put(

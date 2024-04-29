@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { omit } from 'lodash'
 import GroupModel, { Group, privateFields as groupPrivateFields } from 'src/models/group.models'
-import { CreateGroupInput, GetGroupByIdInput, UpdateGroupInput } from 'src/schemas/group.schemas'
+import { AddUserToGroupInput, CreateGroupInput, GetGroupByIdInput, UpdateGroupInput } from 'src/schemas/group.schemas'
 import { UserAccessTokenPayloadInput } from 'src/schemas/user.schemas'
 import { createGroup, deleteGroup, getGroupById, getGroups, getUserGroups, replaceGroup } from 'src/services/group.services'
 import { findUserById } from 'src/services/user.services'
@@ -190,5 +190,25 @@ export async function paymentsPerGroup (
   } catch (error) {
     log.error(error)
     return res.status(500).send()
+  }
+}
+
+export async function addUserToGroupHandler (
+  req: Request<GetGroupByIdInput, {}, AddUserToGroupInput>,
+  res: Response
+): Promise<Response> {
+  try {
+    const groupId = req.params.id
+    const { users: newUsers } = req.body
+    const groupDb = await getGroupById(groupId)
+    if (groupDb == null) {
+      return res.status(404).send('Group not found')
+    }
+    groupDb.users = groupDb.users.concat(newUsers)
+    await groupDb.save()
+    return res.send('Users added successfully')
+  } catch (error) {
+    log.error(error)
+    return res.status(500).send(error)
   }
 }

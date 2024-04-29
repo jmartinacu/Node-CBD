@@ -26,9 +26,16 @@ export const updateGroupSchema = object({
   })
 })
 
+export const addUserToGropusSchema = object({
+  body: object({
+    users: array(string()).min(1, 'At least must be added one member')
+  })
+})
+
 export type CreateGroupInput = TypeOf<typeof createGroupSchema>['body']
 export type GetGroupByIdInput = TypeOf<typeof getGroupByIdSchema>['params']
 export type UpdateGroupInput = TypeOf<typeof updateGroupSchema>['body']
+export type AddUserToGroupInput = TypeOf<typeof addUserToGropusSchema>['body']
 export type GroupRequestPayload = Group & {
   _id: string
   createdAt: string
