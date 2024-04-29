@@ -191,6 +191,9 @@ export async function getNegativeMoneyUsers (
       },
       { $sort: { totalMoney: 1 } }
     ])
+    if (users.length === 0) {
+      return res.send(users)
+    }
     const collections = await mongoose.connection.db.listCollections().toArray()
     const collectionExists = collections.some(collection => collection.name === 'negativeMoneyUsers')
     if (!collectionExists) {
@@ -203,7 +206,7 @@ export async function getNegativeMoneyUsers (
     return res.send(users)
   } catch (error) {
     log.error(error)
-    return res.status(500).send()
+    return res.status(500).send(error)
   }
 }
 
@@ -233,6 +236,9 @@ export async function getPositiveMoneyUsers (
       },
       { $sort: { totalMoney: -1 } }
     ])
+    if (users.length === 0) {
+      return res.send(users)
+    }
     const collections = await mongoose.connection.db.listCollections().toArray()
     const collectionExists = collections.some(collection => collection.name === 'positiveMoneyUsers')
     if (!collectionExists) {
