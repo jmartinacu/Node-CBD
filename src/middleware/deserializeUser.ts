@@ -12,7 +12,7 @@ const deserializeUser = async (
     return next()
   }
   const decoded = verifyJwt<UserAccessTokenPayloadInput>(accessToken, 'acessTokenPublicKey')
-  log.info('user: ', decoded)
+  log.info(decoded?._id)
   if (decoded !== null) {
     res.locals.user = decoded
   }
