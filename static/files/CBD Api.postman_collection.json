@@ -1,0 +1,866 @@
+{
+	"info": {
+		"_postman_id": "604cf2b9-91af-4aa5-9539-c2bc2cdbe86f",
+		"name": "CBD Api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21035219",
+		"_collection_link": "https://red-moon-934421.postman.co/workspace/New-Team-Workspace~f7ba06f5-0968-4b2b-b165-5c52b6c429a4/collection/23874385-604cf2b9-91af-4aa5-9539-c2bc2cdbe86f?action=share&source=collection_link&creator=21035219"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Register user",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let firstName = pm.variables.replaceIn(\"{{$randomFirstName}}\")",
+									"let lastName = pm.variables.replaceIn(\"{{$randomFirstName}}\")",
+									"",
+									"pm.environment.set(\"firstName\", firstName)",
+									"",
+									"pm.environment.set(\"lastName\", lastName)",
+									"",
+									"pm.environment.set(\"email\", `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`)",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Joaquin\",\n    \"lastName\": \"Martin\",\n    \"email\": \"jmartinacu2002@gmail.com\",\n    \"password\": \"{{password}}\",\n    \"passwordConfirmation\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/users",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\",\n    \"passwordConfirmation\": \"{{password}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/api/users",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "Text",
+							"header": [],
+							"cookie": [],
+							"body": "\"User successfully created\""
+						},
+						{
+							"name": "Passwords do not match",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\",\n    \"passwordConfirmation\": \"{{password}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/api/users",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "Text",
+							"header": [],
+							"cookie": [],
+							"body": "[\n    {\n        \"code\": \"custom\",\n        \"message\": \"Passwords do not match\",\n        \"path\": [\n            \"body\",\n            \"passwordConfirmation\"\n        ]\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Verify user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/users/verify/662a7d67011f8256fcc6f436/CxOZLEggKRoWypSB31Tke",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"verify",
+								"662a7d67011f8256fcc6f436",
+								"CxOZLEggKRoWypSB31Tke"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request reset password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/users/forgotpassword",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"forgotpassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{passwordTwo}}\",\n    \"passwordConfirmation\": \"{{passwordTwo}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/users/resetpassword/:id/:passwordResetCode",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"resetpassword",
+								":id",
+								":passwordResetCode"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "65f4972a33f33d42e7e339d6"
+								},
+								{
+									"key": "passwordResetCode",
+									"value": "yePIh0Gxisad7NkOdfb-y"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Me",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"idCurrentUser\", jsonData._id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/users/me",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Top 3",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/users/top3",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"top3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Negative People",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/users/negative",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"negative"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Positive People",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/users/positive",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"positive"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Average Costs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/users/avg",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"avg"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"accessToken\", jsonData.accessToken);",
+									"postman.setEnvironmentVariable(\"refreshToken\", jsonData.refreshToken);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/sessions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"sessions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh access token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"accessToken\", jsonData.accessToken)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-refresh",
+								"value": "{{refreshToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/sessions/refresh",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"sessions",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Group",
+			"item": [
+				{
+					"name": "Create Group",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"grupo 1\",\r\n    \"users\": [\"{{idCurrentUser}}\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/group",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"group"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Groups",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/groups",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Group",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/group/662fa1c2ff651e77c89b1daf",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"group",
+								"662fa1c2ff651e77c89b1daf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Group",
+								"value": "662fa1c2ff651e77c89b1daf",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"users\": [\"{{idCurrentUser}}\", \"662fa212ff651e77c89b1db3\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/group/662fa1c2ff651e77c89b1daf",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"group",
+								"662fa1c2ff651e77c89b1daf"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User's Groups",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/group/user",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"group",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Group",
+								"value": "662a1d0ae5293eff752c9e79",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/group/662a1d0ae5293eff752c9e79",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"group",
+								"662a1d0ae5293eff752c9e79"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Payments per group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/groups/payments",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"groups",
+								"payments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add User to Group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Group",
+								"value": "662fa1c2ff651e77c89b1daf",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"users\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/group/add/662fa1c2ff651e77c89b1daf",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"group",
+								"add",
+								"662fa1c2ff651e77c89b1daf"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "Do Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Group",
+								"value": "662a7e2b011f8256fcc6f449",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"receiver\": \"662a7d60011f8256fcc6f434\",\r\n    \"amount\": 13\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/payment",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Group",
+								"value": "662a7e2b011f8256fcc6f449",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/payment/662a9a6a6ba44ddc968ec021",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"payment",
+								"662a9a6a6ba44ddc968ec021"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Payments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/payments",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"payments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Payments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/payment/user",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"payment",
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
