@@ -58,6 +58,8 @@ Tras esto, pasaremos a configurar la base de datos. Para esto, abriremos la apli
 Daremos click en “Save & Connect”, llamando a la conexión “CBD”. Una vez realizado esto, Mongo se encargará de crear tanto la BD como las colecciones.
 
 Por último, hemos de abrir PostMan, crearnos un Workspace e importar los siguientes archivos, uno en las colecciones y otro en las variables de entorno.
+Estos archivos se encuentran en el proyecto, en la carpeta “static/files”
+Estos archivos se encuentran en el proyecto, en la carpeta “static/files”
 
 Tras esto, ya lo tendremos todo configurado para poder empezar a probar el proyecto.
 
