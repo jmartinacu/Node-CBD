@@ -22,7 +22,7 @@ export async function createUserHandler (
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       text: `verification code ${user.verificationCode}. Id: ${user._id}`
     })
-    return res.send('User successfully created')
+    return res.send({ Id: user._id, Verificationcode: user.verificationCode })
   } catch (error: any) {
     log.error(error)
     if (error.code === 11000) {
@@ -78,7 +78,7 @@ export async function forgotPasswordHandler (
     text: `Password reset code ${passwordResetCode}. Id ${user._id}`
   })
   log.debug(`Password reset email sent to ${email}`)
-  return res.send(msg)
+  return res.send({ id: user._id, ResetCode: passwordResetCode })
 }
 
 export async function resetPasswordHandler (
